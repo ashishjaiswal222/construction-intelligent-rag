@@ -18,8 +18,10 @@ class GroqRepairProvider:
         if retry_count == 0:
             time.sleep(2)
             
+        import os
+        model = os.environ.get('GROQ_MODEL', 'qwen/qwen3.8-27b')
         response = self.client.chat.completions.create(
-            model='llama-3.1-8b-instant',
+            model=model,
             messages=[{'role': 'user', 'content': prompt}],
             max_tokens=600,
             temperature=0.1,

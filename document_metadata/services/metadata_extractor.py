@@ -19,8 +19,9 @@ class MetadataExtractor:
         # Groq (Fallback)
         self.fallback_llm = None
         if groq_api_key:
+            model = os.environ.get('GROQ_MODEL', 'qwen/qwen3.8-27b')
             self.fallback_llm = ChatGroq(
-                model='llama-3.1-8b-instant',
+                model=model,
                 api_key=groq_api_key,
                 temperature=0.0,
             )

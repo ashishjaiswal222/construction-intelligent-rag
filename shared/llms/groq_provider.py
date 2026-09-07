@@ -5,8 +5,8 @@ from langchain_groq import ChatGroq
 from .base import BaseLLMProvider
 
 class GroqProvider(BaseLLMProvider):
-    def __init__(self, model_name: str = 'llama-3.1-8b-instant'):
-        self.model_name = model_name
+    def __init__(self, model_name: str = None):
+        self.model_name = model_name or os.environ.get('GROQ_MODEL', 'qwen/qwen3.8-27b')
         self.client = ChatGroq(model=self.model_name, api_key=os.environ.get('GROQ_API_KEY'))
 
     def analyze_structured(self, prompt: str, schema: Type) -> Tuple[Any, Dict[str, Any]]:

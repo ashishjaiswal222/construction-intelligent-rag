@@ -1,11 +1,15 @@
+import os
+import logging
 from rag_generation.prompts.generation_prompt import GENERATION_PROMPT, FALLBACK_GENERATION_PROMPT
+
+logger = logging.getLogger(__name__)
 
 class GeneratorService:
     """
-    Calls Groq llama-3.1-8b-instant with the generation prompt.
+    Calls Groq (or configured model) with the generation prompt, with automatic Gemini fallback.
     """
 
-    MODEL = 'llama-3.1-8b-instant'
+    MODEL = os.environ.get('GROQ_MODEL', 'qwen/qwen3.8-27b')
     MAX_TOKENS = 1024
     TEMPERATURE = 0.1
 
@@ -16,12 +20,31 @@ class GeneratorService:
 
     def __init__(self, groq_api_key: str):
         from langchain_groq import ChatGroq
+        self.model = os.environ.get('GROQ_MODEL', 'qwen/qwen3.8-27b')
+        self.MODEL = self.model
         self.llm = ChatGroq(
-            model=self.MODEL,
+            model=self.model,
             api_key=groq_api_key,
             temperature=self.TEMPERATURE,
             max_tokens=self.MAX_TOKENS,
         )
+
+    def _call_gemini_fallback(self, prompt: str) -> str:
+        gemini_key = os.environ.get('GEMINI_API_KEY') or os.environ.get('GOOGLE_API_KEY')
+        if gemini_key:
+            from langchain_google_genai import ChatGoogleGenerativeAI
+            for gemini_model in ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-1.5-flash']:
+                try:
+                    gemini_llm = ChatGoogleGenerativeAI(
+                        model=gemini_model,
+                        google_api_key=gemini_key,
+                        temperature=self.TEMPERATURE,
+                    )
+                    res = gemini_llm.invoke(prompt)
+                    return res.content
+                except Exception as e:
+                    logger.warning(f"Gemini model {gemini_model} fallback failed: {e}")
+        return ""
 
     def generate(
         self,
@@ -31,7 +54,7 @@ class GeneratorService:
     ) -> str:
         """
         Formats GENERATION_PROMPT with query and context.
-        Calls Groq. Returns answer string.
+        Calls Groq, falling back to Gemini if needed. Returns answer string.
         """
         if not context_string:
             return self.FAILURE_MESSAGE
@@ -42,7 +65,11 @@ class GeneratorService:
         try:
             response = self.llm.invoke(prompt)
             return response.content
-        except Exception:
+        except Exception as e:
+            logger.warning(f"Groq generation failed with {self.model}: {e}. Trying Gemini fallback.")
+            fallback = self._call_gemini_fallback(prompt)
+            if fallback:
+                return fallback
             return self.FAILURE_MESSAGE
 
     def rewrite_query(self, user_query: str, chat_history: list[dict]) -> str:
@@ -62,7 +89,11 @@ Rewritten Query:"""
         try:
             response = self.llm.invoke(prompt)
             return response.content.strip()
-        except Exception:
+        except Exception as e:
+            logger.warning(f"Groq query rewrite failed: {e}. Trying Gemini fallback.")
+            fallback = self._call_gemini_fallback(prompt)
+            if fallback:
+                return fallback.strip()
             return user_query
 
     def classify_intent(self, user_query: str) -> str:
@@ -75,6 +106,9 @@ Query: "{user_query}"
             res = self.llm.invoke(prompt)
             return "CHAT" if "CHAT" in res.content.upper() else "SEARCH"
         except Exception:
+            fallback = self._call_gemini_fallback(prompt)
+            if fallback and "CHAT" in fallback.upper():
+                return "CHAT"
             return "SEARCH"
 
     def generate_conversational_response(self, user_query: str, chat_history: list[dict], mem0_context: str) -> str:
@@ -94,4 +128,7 @@ Assistant:"""
             res = self.llm.invoke(prompt)
             return res.content.strip()
         except Exception:
+            fallback = self._call_gemini_fallback(prompt)
+            if fallback:
+                return fallback.strip()
             return "Hello! How can I help you with your construction documents today?"

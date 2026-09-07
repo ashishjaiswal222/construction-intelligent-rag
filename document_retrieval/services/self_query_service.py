@@ -6,9 +6,11 @@ logger = logging.getLogger(__name__)
 
 class SelfQueryService:
     def __init__(self, groq_api_key: str):
+        import os
         from langchain_groq import ChatGroq
+        model = os.environ.get('GROQ_MODEL', 'qwen/qwen3.8-27b')
         self.llm = ChatGroq(
-            model='llama-3.1-8b-instant',
+            model=model,
             api_key=groq_api_key,
             temperature=0.0,
         )

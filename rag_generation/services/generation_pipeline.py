@@ -130,7 +130,7 @@ class GenerationPipeline:
                 stages_completed=request.retrieval_result.stages_completed,
                 retrieval_ms=request.retrieval_result.processing_ms,
                 generation_ms=generation_ms,
-                model_used=self.generator.MODEL,
+                model_used=getattr(self.generator, 'MODEL', getattr(self.generator, 'model', 'qwen/qwen3.8-27b')),
                 warning_message=warning_message or '',
             )
 
@@ -162,7 +162,7 @@ class GenerationPipeline:
                 stages_completed=request.retrieval_result.stages_completed,
                 retrieval_ms=request.retrieval_result.processing_ms,
                 generation_ms=generation_ms,
-                model_used=self.generator.MODEL,
+                model_used=getattr(self.generator, 'MODEL', getattr(self.generator, 'model', 'qwen/qwen3.8-27b')),
                 warning_message=str(e),
             )
             return self._build_failure_response(request, GeneratorService.FAILURE_MESSAGE)
