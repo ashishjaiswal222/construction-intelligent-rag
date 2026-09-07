@@ -1,0 +1,117 @@
+# ==========================================
+# Python & Bytecode
+# ==========================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# ==========================================
+# Virtual Environments
+# ==========================================
+.venv/
+venv/
+ENV/
+env/
+env.bak/
+venv.bak/
+
+# ==========================================
+# Environments & Secrets
+# ==========================================
+.env
+.env.*
+!.env.example
+frontend/.env.local
+frontend/.env.*.local
+
+# ==========================================
+# Database & Storage
+# ==========================================
+*.sqlite3
+*.db
+db.sqlite3
+construction_qdrant_db/
+qdrant_storage/
+
+# ==========================================
+# Serialized Models & Indexes
+# ==========================================
+bm25_index.pkl
+*.pkl
+*.bin
+*.onnx
+*.pt
+*.safetensors
+
+# ==========================================
+# Celery & Task Queues
+# ==========================================
+celerybeat-schedule*
+*.pid
+
+# ==========================================
+# Uploaded User Documents & Samples
+# ==========================================
+uploads/*
+!uploads/.gitkeep
+
+# ==========================================
+# Node & Frontend Build Artifacts
+# ==========================================
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/build/
+frontend/coverage/
+frontend/.pnp
+frontend/.pnp.*
+frontend/.yarn/*
+!frontend/.yarn/patches
+!frontend/.yarn/plugins
+!frontend/.yarn/releases
+!frontend/.yarn/versions
+
+# ==========================================
+# Testing & Cache
+# ==========================================
+.pytest_cache/
+.coverage
+htmlcov/
+.lock
+
+# ==========================================
+# OS & IDE Files
+# ==========================================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ==========================================
+# Temporary & Scratch Files
+# ==========================================
+test.py
+scratch/

@@ -1,0 +1,31 @@
+from django.db import models
+
+class DocumentStatus(models.TextChoices):
+    QUEUED = 'queued', 'Queued for Processing'
+    CLASSIFYING = 'classifying', 'Being Classified'
+    CLASSIFIED = 'classified', 'Classification Complete'
+    OCR_PROCESSING = 'ocr_processing', 'OCR in Progress'
+    CHUNKING = 'chunking', 'Chunking in Progress'
+    EMBEDDING = 'embedding', 'Embedding in Progress'
+    INDEXED = 'indexed', 'Fully Indexed'
+    FAILED = 'failed', 'Processing Failed'
+    NEEDS_REVIEW = 'needs_review', 'Needs Human Review'
+
+class DocumentType(models.TextChoices):
+    CONTRACT = 'contract', 'Contract'
+    BOQ = 'boq', 'Bill of Quantities'
+    DRAWING = 'drawing', 'Construction Drawing'
+    SPECIFICATION = 'specification', 'Specification'
+    RFI = 'rfi', 'Request for Information'
+    CHANGE_ORDER = 'change_order', 'Change Order'
+    INVOICE = 'invoice', 'Invoice'
+    SAFETY = 'safety', 'Safety Report'
+    INSPECTION = 'inspection', 'Inspection Report'
+    SITE_LOG = 'site_log', 'Site Daily Log'
+    VENDOR_DOC = 'vendor_doc', 'Vendor Document'
+    SCHEDULE = 'schedule', 'Project Schedule'
+    EMAIL = 'email', 'Email Correspondence'
+    CALC = 'calc', 'Engineering Calculation'
+    PO = 'po', 'Purchase Order'
+    RFP = 'rfp', 'Request for Proposal'
+    UNKNOWN = 'unknown', 'Unknown / Needs Review'

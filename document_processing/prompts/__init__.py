@@ -1,0 +1,9 @@
+from .handwriting_prompt import HANDWRITING_EXTRACTION_PROMPT
+from .drawing_prompt import DRAWING_UNDERSTANDING_PROMPT
+from .table_prompt import TABLE_EXTRACTION_PROMPT
+
+__all__ = [
+    'HANDWRITING_EXTRACTION_PROMPT',
+    'DRAWING_UNDERSTANDING_PROMPT',
+    'TABLE_EXTRACTION_PROMPT'
+]
